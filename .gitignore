@@ -1,0 +1,20 @@
+/.bundle/
+/Gemfile.lock
+/coverage/
+/spec/reports/
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+.DS_Store
+
+/coverage
+.ruby-gemset
+*.swp
+*.swo
+.rvmrc
+/pkg
+\.idea/

@@ -1,0 +1,23 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  DisplayCopNames: true
+  NewCops: enable
+
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 15
+
+Naming/FileName:
+  Exclude:
+    - lib/rails-cloud-tasks.rb
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
