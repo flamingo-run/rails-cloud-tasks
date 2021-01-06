@@ -1,0 +1,98 @@
+name: Github CI
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - master
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Lint
+        run: bundle exec rubocop
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Build the package
+        run: bundle exec gem build
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Prepare coverage
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+
+      - name: Run unit tests
+        run: bundle exec rspec
+        env:
+          COVERAGE: true
+
+      - name: Report coverage
+        run: GIT_COMMIT_SHA=$(git rev-parse HEAD) GIT_BRANCH=`[[ -z "$GITHUB_HEAD_REF" ]] && echo ${GITHUB_REF/refs\/heads\/} || echo $GITHUB_HEAD_REF` ./cc-test-reporter after-build -t simplecov --exit-code $?
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
