@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Guilherme Araújo']
   spec.email         = ['guilhermeama@gmail.com']
 
-  spec.summary       = 'rails Cloud Tasks'
+  spec.summary       = 'Rails Cloud Tasks'
   spec.description   = 'This gem is a wrapper on Google Cloud Tasks'
-  spec.homepage      = 'http://github.com/rails-run/rails-cloud-tasks'
+  spec.homepage      = 'http://github.com/flamingo-run/rails-cloud-tasks'
   spec.license       = 'Apache License 2.0'
 
   spec.bindir        = 'exe'
