@@ -1,6 +1,7 @@
 module RailsCloudTasks
   class Configuration
-    attr_accessor :project_id, :location_id, :queue_id, :base_url, :jobs
+    attr_accessor :project_id, :location_id, :queue_id, :base_url, :jobs,
+                  :rate_limits, :retry_config
 
     def initialize
       @jobs = Set.new

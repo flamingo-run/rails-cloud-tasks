@@ -23,6 +23,14 @@ module RailsCloudTasks
         @queue = id
       end
 
+      def rate_limits(attrs)
+        @rate_limits = attrs
+      end
+
+      def retry_config(attrs)
+        @retry_config = attrs
+      end
+
       def perform_now(params = nil)
         new.perform(params)
       end
@@ -60,15 +68,23 @@ module RailsCloudTasks
           begin
             client.create_task(parent: queue_path, task: create_task(payload, timestamp))
           rescue Google::Cloud::FailedPreconditionError
-            client.create_queue(
-              parent: queue_path.split('/queues').first,
-              queue:  { name: queue_path }
-            )
+            client.create_queue(create_queue(queue_path))
 
             retry
           end
 
         response.name
+      end
+
+      def create_queue(queue_path)
+        {
+          parent: queue_path.split('/queues').first,
+          queue:  {
+            name:         queue_path,
+            rate_limits:  CONFIG.rate_limits&.merge(@rate_limits || {}),
+            retry_config: CONFIG.retry_config&.merge(@retry_config || {})
+          }.compact
+        }
       end
 
       def create_task(payload, timestamp)

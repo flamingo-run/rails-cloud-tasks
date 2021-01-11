@@ -33,6 +33,9 @@ end
 DummyJob = Class.new do
   include RailsCloudTasks::Job
 
+  rate_limits max_dispatches_per_second: 2.0
+  retry_config max_attempts: 8
+
   def self.name
     'DummyJob'
   end
