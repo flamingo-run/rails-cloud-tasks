@@ -4,7 +4,7 @@ describe RailsCloudTasks::JobsController, type: :controller do
   describe 'POST perform' do
     context 'when the job exists' do
       it 'executes the job' do
-        post :perform, { params: { job_name: 'RailsCloudTasks::Job' } }
+        post :perform, { params: { job_name: 'DummyJob' } }
         expect(response).to have_http_status(:ok)
       end
     end

@@ -2,13 +2,14 @@ require 'active_support/core_ext'
 require 'google/cloud/tasks/v2'
 
 describe RailsCloudTasks::Job do
-  let(:instance) { instance_spy(described_class) }
+  let(:dummy_class) { Class.new { include RailsCloudTasks::Job } }
+  let(:instance) { instance_spy(dummy_class) }
 
   describe 'perform_now' do
     before do
-      allow(described_class).to receive(:new).and_return(instance)
+      allow(dummy_class).to receive(:new).and_return(instance)
 
-      described_class.perform_now
+      dummy_class.perform_now
     end
 
     it 'executes the job immediatelly' do
@@ -17,20 +18,20 @@ describe RailsCloudTasks::Job do
   end
 
   describe 'perform_later' do
-    subject(:perform_later) { described_class.perform_later }
+    subject(:perform_later) { dummy_class.perform_later }
 
     before do
-      allow(described_class).to receive(:enqueue_task).with(nil).and_return('task-id')
+      allow(dummy_class).to receive(:enqueue_task).with(nil).and_return('task-id')
     end
 
     it { is_expected.to eq 'task-id' }
   end
 
   describe 'perform_in' do
-    subject(:perform_in) { described_class.perform_in(1.minute) }
+    subject(:perform_in) { dummy_class.perform_in(1.minute) }
 
     before do
-      allow(described_class).to receive(:enqueue_task)
+      allow(dummy_class).to receive(:enqueue_task)
         .with(nil, instance_of(Integer))
         .and_return('task-id')
     end
@@ -39,10 +40,10 @@ describe RailsCloudTasks::Job do
   end
 
   describe 'perform_at' do
-    subject(:perform_at) { described_class.perform_at(1.hour.from_now) }
+    subject(:perform_at) { dummy_class.perform_at(1.hour.from_now) }
 
     before do
-      allow(described_class).to receive(:enqueue_task)
+      allow(dummy_class).to receive(:enqueue_task)
         .with(nil, instance_of(Integer))
         .and_return('task-id')
     end
@@ -51,13 +52,13 @@ describe RailsCloudTasks::Job do
   end
 
   describe 'queue management' do
-    subject(:enqueue_task) { described_class.perform_in(3.minutes) }
+    subject(:enqueue_task) { dummy_class.perform_in(3.minutes) }
 
     let(:client) { instance_spy(Google::Cloud::Tasks::V2::CloudTasks::Client) }
     let(:queue_path) { 'projetcs/project_id/location/location_id/queues/queue_id' }
 
     before do
-      allow(described_class).to receive(:client).and_return(client)
+      allow(dummy_class).to receive(:client).and_return(client)
       allow(client).to receive(:queue_path).and_return(queue_path)
     end
 

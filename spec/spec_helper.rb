@@ -30,11 +30,19 @@ RSpec.configure do |config|
   end
 end
 
+DummyJob = Class.new do
+  include RailsCloudTasks::Job
+
+  def self.name
+    'DummyJob'
+  end
+end
+
 RailsCloudTasks.configure do |config|
   config.project_id = 'test-project'
   config.location_id = 'us-central1'
   config.queue_id = 'test-queue'
   config.base_url = 'https://test.com'
 
-  config.register_jobs([RailsCloudTasks::Job])
+  config.register_jobs([DummyJob])
 end

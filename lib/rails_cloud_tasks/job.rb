@@ -1,8 +1,16 @@
 require 'google-cloud-tasks'
 
 module RailsCloudTasks
-  class Job
-    class << self
+  module Job
+    extend ActiveSupport::Concern
+
+    def perform(_); end
+
+    def self.included(base)
+      base.extend ClassMethods
+    end
+
+    module ClassMethods
       def perform_now(params = nil)
         new.perform(params)
       end
@@ -65,7 +73,5 @@ module RailsCloudTasks
         @client ||= Google::Cloud::Tasks.cloud_tasks
       end
     end
-
-    def perform(_); end
   end
 end
