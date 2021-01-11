@@ -3,4 +3,10 @@ require:
   - rubocop-rspec
 
 Metrics/BlockLength:
-  Max: 80
+  Max: 100
+
+RSpec/ImplicitSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5

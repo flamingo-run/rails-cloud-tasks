@@ -81,5 +81,35 @@ describe RailsCloudTasks::Job do
         expect(client).to have_received(:create_queue)
       end
     end
+
+    describe 'queue_attrs' do
+      subject(:queue_attrs) { dummy_class.queue_attrs }
+
+      context 'with default settings' do
+        it do
+          is_expected.to eq(
+            project:  'test-project',
+            location: 'us-central1',
+            queue:    'test-queue'
+          )
+        end
+      end
+
+      context 'with per job settings' do
+        before do
+          dummy_class.project_id('per-job-project')
+          dummy_class.location_id('per-job-location')
+          dummy_class.queue_id('per-job-queue')
+        end
+
+        it do
+          is_expected.to eq(
+            project:  'per-job-project',
+            location: 'per-job-location',
+            queue:    'per-job-queue'
+          )
+        end
+      end
+    end
   end
 end

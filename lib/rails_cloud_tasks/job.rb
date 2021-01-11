@@ -11,6 +11,18 @@ module RailsCloudTasks
     end
 
     module ClassMethods
+      def project_id(id)
+        @project = id
+      end
+
+      def location_id(id)
+        @location = id
+      end
+
+      def queue_id(id)
+        @queue = id
+      end
+
       def perform_now(params = nil)
         new.perform(params)
       end
@@ -29,17 +41,20 @@ module RailsCloudTasks
         enqueue_task(params, timestamp)
       end
 
+      CONFIG = RailsCloudTasks.config
+
+      def queue_attrs
+        {
+          project:  @project || CONFIG.project_id,
+          location: @location || CONFIG.location_id,
+          queue:    @queue || CONFIG.queue_id
+        }
+      end
+
       private
 
-      CONFIG = RailsCloudTasks.config
-      QUEUE_ATTRS = {
-        project:  CONFIG.project_id,
-        location: CONFIG.location_id,
-        queue:    CONFIG.queue_id
-      }.freeze
-
       def enqueue_task(payload, timestamp = nil)
-        queue_path = client.queue_path(QUEUE_ATTRS)
+        queue_path = client.queue_path(queue_attrs)
 
         response =
           begin
