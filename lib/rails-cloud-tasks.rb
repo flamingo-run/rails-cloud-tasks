@@ -7,8 +7,6 @@ module RailsCloudTasks
   autoload :Adapter
   autoload :AppEngine
   autoload :Configuration
-  autoload :Engine
-  autoload :Job
   autoload :Version
 
   module Rack
@@ -28,5 +26,3 @@ module RailsCloudTasks
     @config ||= Configuration.new
   end
 end
-
-require 'rails_cloud_tasks/engine' if defined?(::Rails::Engine)
