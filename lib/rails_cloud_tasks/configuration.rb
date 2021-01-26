@@ -1,13 +1,35 @@
 module RailsCloudTasks
   class Configuration
-    attr_accessor :project_id, :location_id, :queue_id, :base_url, :jobs
+    attr_accessor :project_id, :location_id, :queue_id, :base_url, :host, :tasks_path, :jobs, :auth
 
     def initialize
       @jobs = Set.new
+      @project_id = AppEngine.project_id
+      @tasks_path = '/tasks'
+      @auth = authenticate
     end
 
-    def register_jobs(classes)
-      @jobs += classes.map(&:name)
+    def inject_routes
+      tasks_path = @tasks_path
+
+      Rails.application.routes.append do
+        post "#{tasks_path}/:job_class", to: RailsCloudTasks::Rack::Jobs
+        post tasks_path, to: RailsCloudTasks::Rack::Tasks
+      end
+    end
+
+    private
+
+    def authenticate
+      email = AppEngine.service_account_email || Google::Auth.get_application_default.issuer
+
+      {
+        oidc_token: {
+          service_account_email: email
+        }
+      }
+    rescue RuntimeError, Errno::EHOSTDOWN
+      {}
     end
   end
 end
