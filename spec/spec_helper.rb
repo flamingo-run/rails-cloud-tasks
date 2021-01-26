@@ -8,8 +8,11 @@ require 'rspec/rails'
 require 'shoulda-matchers'
 require 'simplecov'
 require 'simplecov_json_formatter'
+require 'webmock/rspec'
 
 require 'rails-cloud-tasks'
+
+Dir[File.expand_path(File.join('spec/support/**/*.rb'))].sort.each { |f| require f }
 
 formatters = [
   SimpleCov::Formatter::HTMLFormatter,
@@ -39,6 +42,6 @@ RailsCloudTasks.configure do |config|
   config.location_id = 'us-central1'
   config.queue_id = 'test-queue'
   config.base_url = 'https://test.com'
-
-  config.register_jobs([RailsCloudTasks::Job])
+  config.host = 'https://test.com'
+  config.tasks_path = '/test-tasks'
 end
