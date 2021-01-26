@@ -29,6 +29,50 @@ The following APIs must be enabled in your project(s):
 gem 'rails-cloud-tasks'
 ```
 
+- Add an initializer:
+```ruby
+# ./config/initializers/rails_cloud_tasks.rb
+
+require 'rails-cloud-tasks'
+
+RailsCloudTasks.configure do |config|
+  config.project_id = 'my-gcp-project' # This is not needed if running on GCE
+  config.location_id = 'us-central1'
+
+  # Base url used by Cloud Tasks to reach your application and run the tasks
+  config.host = 'https://myapplication.host.com'
+  config.tasks_path = '/v2/tasks' # default: '/tasks'
+
+  # Inject routes into application
+  config.inject_routes
+end
+```
+
+- Add a Job class:
+```ruby
+# ./app/jobs/application_job.rb
+
+class ApplicationJob < ActiveJob::Base
+  queue_as 'my-default-queue'
+end
+
+
+# ./app/jobs/my_first_job.rb
+
+class MyFirstJob < ApplicationJob
+  # Here you may override the queue, if needed
+  queue_as 'some-other-queue'
+
+  def perform(attrs)
+    # Execute stuff
+  end
+end
+```
+
+- Enqueue a job:
+```ruby
+MyJob.perform_later(attrs)
+```
 ## Tests
 
 To run tests:
