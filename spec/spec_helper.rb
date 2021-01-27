@@ -7,10 +7,14 @@ require 'rspec/its'
 require 'rspec/rails'
 require 'shoulda-matchers'
 require 'simplecov'
+require 'simplecov_json_formatter'
 
 require 'rails-cloud-tasks'
 
-formatters = [SimpleCov::Formatter::HTMLFormatter]
+formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter
+]
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(formatters)
 
