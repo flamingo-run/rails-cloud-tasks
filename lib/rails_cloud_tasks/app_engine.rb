@@ -29,6 +29,8 @@ module RailsCloudTasks
 
         Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }.body
       rescue Errno::EHOSTDOWN
+        # This error occurs sporadically when trying to resolve the metadata endpoint
+        # locally. It is unlikely to occur when running on GCE.
         nil
       end
     end
