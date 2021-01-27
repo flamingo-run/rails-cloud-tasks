@@ -1,0 +1,42 @@
+name: Release CI
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}-2.7
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Build package
+        run: bundle exec gem build -o rails-cloud-tasks.gem
+
+      - name: Setup RubyGems credentials
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems: Bearer ${{ secrets.RUBYGEMS_API_TOKEN }}\n" > $HOME/.gem/credentials
+
+      - name: Push package
+        run: gem push --key rubygems rails-cloud-tasks.gem
