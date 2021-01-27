@@ -29,6 +29,8 @@ module RailsCloudTasks
         }
       }
     rescue RuntimeError, Errno::EHOSTDOWN
+      # EHOSTDOWN occurs sporadically when trying to resolve the metadata endpoint
+      # locally. It is unlikely to occur when running on GCE.
       {}
     end
   end
