@@ -23,7 +23,7 @@ describe RailsCloudTasks::Rack::Jobs do
     context 'when job is successfully attempted' do
       its(:first)  { is_expected.to eq 200 }
       its(:second) { is_expected.to eq('Content-Type' => 'application/json') }
-      its(:third)  { is_expected.to eq [{ error: nil }.to_json] }
+      its(:third)  { is_expected.to eq [{}.to_json] }
     end
 
     context 'when payload is invalid' do
