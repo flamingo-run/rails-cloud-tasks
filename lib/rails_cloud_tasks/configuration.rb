@@ -1,9 +1,8 @@
 module RailsCloudTasks
   class Configuration
-    attr_accessor :project_id, :location_id, :host, :tasks_path, :jobs, :auth
+    attr_accessor :project_id, :location_id, :host, :tasks_path, :auth
 
     def initialize
-      @jobs = Set.new
       @project_id = AppEngine.project_id
       @tasks_path = '/tasks'
       @auth = authenticate
