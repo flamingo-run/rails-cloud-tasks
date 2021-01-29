@@ -36,7 +36,7 @@ jobs:
           mkdir -p $HOME/.gem
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
-          printf -- "---\n:rubygems: Bearer ${{ secrets.RUBYGEMS_API_TOKEN }}\n" > $HOME/.gem/credentials
+          printf -- "---\n:rubygems: ${{ secrets.RUBYGEMS_API_TOKEN }}\n" > $HOME/.gem/credentials
 
       - name: Push package
         run: gem push --key rubygems rails-cloud-tasks.gem
