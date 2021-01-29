@@ -39,4 +39,21 @@ module RailsCloudTasks
       end
     end
   end
+
+  @queue_adapter = nil
+
+  def queue_adapter
+    @@queue_adapter
+  end
+
+  def self.queue_adapter
+    @queue_adapter ||= Adapter.new
+  rescue StandardError => e
+    raise e unless Rails.env.development?
+
+    logger.warn('unable to setup adapter, falling back to :inline')
+    logger.warn(e)
+
+    :inline
+  end
 end

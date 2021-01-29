@@ -64,6 +64,14 @@ Check out the available configs and its usage description:
 | tasks_path            	| The path to run tasks                                                                                       	| 𐄂                   	|                    	| '/tasks'                 	|
 
 
+- Configure ActiveJob queue_adapter
+
+```ruby
+# ./config/application.rb
+
+config.active_job.queue_adapter = RailsCloudTasks.queue_adapter
+```
+
 - Add a Job class:
 ```ruby
 # ./app/jobs/application_job.rb
