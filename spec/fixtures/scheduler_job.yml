@@ -1,0 +1,16 @@
+- name: HashArgsJob
+  schedule: 0 8 * * *
+  description: Hash args
+  time_zone: "America/Los_Angeles"
+  args:
+    arg1: 100
+    arg2: 200
+- name: MultArgsJob
+  schedule: 0 8 * * *
+  description: Mult args
+  time_zone: "America/Los_Angeles"
+  args:
+    - arg1: 100
+      arg2: 200
+    - arg1: 1
+      arg1: 3

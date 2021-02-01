@@ -1,6 +1,7 @@
 module RailsCloudTasks
   class Configuration
-    attr_accessor :location_id, :host, :tasks_path, :service_account_email
+    attr_accessor :location_id, :host, :tasks_path, :service_account_email, :scheduler_file_path,
+                  :scheduler_prefix_name
 
     attr_writer :project_id
     attr_reader :app_engine, :google_auth
@@ -10,6 +11,9 @@ module RailsCloudTasks
       @location_id = ENV['GCP_LOCATION']
       @project_id = ENV['GCP_PROJECT']
       @tasks_path = '/tasks'
+      @scheduler_file_path = './config/scheduler.yml'
+      @scheduler_prefix_name = 'rails-cloud'
+
       @app_engine = app_engine
       @google_auth = google_auth
     end
