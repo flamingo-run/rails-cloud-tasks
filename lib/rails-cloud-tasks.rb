@@ -4,6 +4,7 @@ require 'rails_cloud_tasks/rack/errors'
 module RailsCloudTasks
   extend ActiveSupport::Autoload
 
+  autoload :Scheduler
   autoload :Adapter
   autoload :AppEngine
   autoload :Configuration
