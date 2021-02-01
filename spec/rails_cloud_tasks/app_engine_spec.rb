@@ -4,10 +4,10 @@ require 'google/cloud/tasks/v2'
 describe RailsCloudTasks::AppEngine do
   subject(:app_engine) { described_class }
 
+  before { app_engine.reset! }
+
   describe 'project_id' do
     subject(:project_id) { app_engine.project_id }
-
-    before { app_engine.reset! }
 
     context 'when not on GCE' do
       before do
@@ -31,8 +31,6 @@ describe RailsCloudTasks::AppEngine do
 
   describe 'service_account_email' do
     subject(:service_account_email) { app_engine.service_account_email }
-
-    before { app_engine.reset! }
 
     context 'when not on GCE' do
       before do
