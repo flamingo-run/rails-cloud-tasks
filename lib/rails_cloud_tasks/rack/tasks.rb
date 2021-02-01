@@ -11,7 +11,7 @@ module RailsCloudTasks
 
           ActiveJob::Base.execute(job)
 
-          response(200, { error: nil })
+          response(200, {})
         rescue Rack::InvalidPayloadError => e
           response(400, { error: e.cause.message })
         rescue StandardError => e

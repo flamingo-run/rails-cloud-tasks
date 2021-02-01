@@ -12,7 +12,7 @@ module RailsCloudTasks
           job_args = extract_args(request)
           job_class.perform_now(job_args)
 
-          response(200, { error: nil })
+          response(200, {})
         rescue Rack::InvalidPayloadError => e
           response(422, { error: e.message })
         rescue StandardError => e
