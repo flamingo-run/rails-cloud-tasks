@@ -36,6 +36,7 @@ gem 'rails-cloud-tasks'
 require 'rails-cloud-tasks'
 
 RailsCloudTasks.configure do |config|
+  config.service_account_email = 'test-account@test-project.iam.gserviceaccount.com'
   config.project_id = 'my-gcp-project' # This is not needed if running on GCE
   config.location_id = 'us-central1'
 
@@ -47,6 +48,8 @@ RailsCloudTasks.configure do |config|
   config.inject_routes
 end
 ```
+
+You can use env-var to define _project_id_, _location_id_ and _service_account_email_ instead. Just add the following environment variables on your application: _GCP_LOCATION_, _GCP_PROJECT_, _GCP_SERVICE_ACCOUNT_.  The attributes will be fetched using GCP metadata if missing.
 
 - Add a Job class:
 ```ruby

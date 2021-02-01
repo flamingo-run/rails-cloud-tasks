@@ -35,4 +35,5 @@ RailsCloudTasks.configure do |config|
   config.location_id = 'us-central1'
   config.host = 'https://test.com'
   config.tasks_path = '/test-tasks'
+  config.service_account_email = 'test@email.eduk'
 end
