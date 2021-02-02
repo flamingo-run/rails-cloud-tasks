@@ -1,13 +1,18 @@
-# r=RailsCloudTasks::Scheduler.new.upsert
-
 module RailsCloudTasks
   class Scheduler
     delegate :project_id, :location_id, :host, :auth, :tasks_path,
-             :scheduler_file_path, :scheduler_prefix_name, to: 'RailsCloudTasks.config'
+             :scheduler_file_path, :scheduler_prefix_name,
+             :service_account_email, to: 'RailsCloudTasks.config'
 
-    attr_accessor :client
+    attr_reader :client, :credentials
 
-    def initialize(client = Google::Cloud::Scheduler.cloud_scheduler)
+    def initialize(
+      client: Google::Cloud::Scheduler.cloud_scheduler,
+      credentials: RailsCloudTasks::Credentials.new
+    )
+      client.configure do |config|
+        config.credentials = credentials.generate(service_account_email)
+      end
       @client = client
     end
 
