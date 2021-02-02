@@ -4,3 +4,6 @@ require:
 
 Metrics/BlockLength:
   Max: 80
+
+RSpec/MultipleMemoizedHelpers:
+  AllowSubject: true
