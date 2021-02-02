@@ -3,12 +3,11 @@ require_relative './railtie'
 require 'active_support'
 require 'rails_cloud_tasks/rack/errors'
 
-
 module RailsCloudTasks
-
   extend ActiveSupport::Autoload
 
   autoload :Scheduler
+  autoload :Credentials
   autoload :Adapter
   autoload :AppEngine
   autoload :Configuration

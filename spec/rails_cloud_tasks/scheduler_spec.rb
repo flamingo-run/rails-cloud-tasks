@@ -1,20 +1,42 @@
 describe RailsCloudTasks::Scheduler do
   require 'google/cloud/scheduler/v1'
-  subject(:scheduler) { described_class.new(client) }
+  subject(:scheduler) { described_class.new(client: client, credentials: credentials) }
 
   let(:client) { instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client) }
+  let(:credentials) { instance_spy(RailsCloudTasks::Credentials) }
+  let(:config) { RailsCloudTasks.config }
+  let(:service_account_email) { config.service_account_email }
+
+  context 'with credentials' do
+    let(:configuration) do
+      instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client::Configuration)
+    end
+    let(:fake_credential) { 'fake generated credential' }
+
+    before do
+      allow(client).to receive(:configure).and_yield(configuration)
+      allow(credentials).to receive(:generate).and_return(fake_credential)
+    end
+
+    it do
+      scheduler
+      expect(credentials).to have_received(:generate).with(service_account_email)
+    end
+
+    it do
+      scheduler
+      expect(configuration).to have_received(:credentials=).with(fake_credential)
+    end
+  end
 
   describe '#upsert' do
     subject(:upsert) { scheduler.upsert }
-
-    let(:config) { RailsCloudTasks.config }
 
     let(:location_path) { 'location/path/to/schedule' }
     let(:project) { config.project_id }
     let(:location) { config.location_id }
     let(:tasks_path) { config.tasks_path }
     let(:host) { config.host }
-    let(:service_account_email) { config.service_account_email }
 
     let(:job1) do
       {
