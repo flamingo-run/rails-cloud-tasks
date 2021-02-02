@@ -3,14 +3,15 @@ module RailsCloudTasks
     attr_accessor :location_id, :host, :tasks_path, :service_account_email
 
     attr_writer :project_id
-    attr_reader :app_engine
+    attr_reader :app_engine, :google_auth
 
-    def initialize(app_engine = AppEngine)
+    def initialize(app_engine = AppEngine, google_auth = Google::Auth)
       @service_account_email = ENV['GCP_SERVICE_ACCOUNT']
       @location_id = ENV['GCP_LOCATION']
       @project_id = ENV['GCP_PROJECT']
       @tasks_path = '/tasks'
       @app_engine = app_engine
+      @google_auth = google_auth
     end
 
     def inject_routes
@@ -35,7 +36,7 @@ module RailsCloudTasks
     def authenticate
       email = service_account_email ||
               app_engine.service_account_email ||
-              Google::Auth.get_application_default.issuer
+              google_auth.get_application_default.issuer
 
       {
         oidc_token: {
