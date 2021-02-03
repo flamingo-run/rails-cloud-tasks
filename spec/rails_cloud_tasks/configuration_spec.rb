@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/BlockLength
 describe RailsCloudTasks::Configuration do
   subject(:configuration) { described_class.new(app_engine, google_auth) }
 
@@ -139,4 +138,3 @@ describe RailsCloudTasks::Configuration do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

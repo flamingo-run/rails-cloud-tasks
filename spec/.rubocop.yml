@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 
 Metrics/BlockLength:
-  Max: 80
+  Max: 200
 
 RSpec/MultipleMemoizedHelpers:
   AllowSubject: true
