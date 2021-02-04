@@ -1,13 +1,17 @@
-name: Release CI
+name: Tag & Release Package
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - main
 
 jobs:
-  release:
+  checks:
     runs-on: ubuntu-latest
+    outputs:
+      pre_release: ${{ steps.versioning.outputs.pre_release }}
+      upgraded: ${{ steps.versioning.outputs.upgraded }}
+      package_version: ${{ steps.versioning.outputs.package_version }}
     steps:
       - uses: actions/checkout@v2
 
@@ -27,6 +31,57 @@ jobs:
 
       - name: Install dependencies
         run: bundle install
+
+      - name: Fetching Tags
+        run: git fetch -t
+
+      - name: Detect version upgrade
+        id: versioning
+        run: |
+          pkg='rails-cloud-tasks'
+          package_version=$(bundle info $pkg | grep -o "$pkg \(.*\)" | sed "s/$pkg (\(.*\))/\1/")
+          echo "::set-output name=package_version::"$package_version
+          upgraded=$(git tag --list | grep -q "${package_version}$" && echo "false" || echo "true")
+          echo "::set-output name=upgraded::"$upgraded
+          pre_release=$([[ $package_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "false" || echo "true")
+          echo "::set-output name=pre_release::"$pre_release
+
+  release:
+    runs-on: ubuntu-latest
+    needs: checks
+    if: needs.checks.outputs.upgraded == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}-2.7
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.checks.outputs.package_version }}
+          release_name: Release ${{ needs.checks.outputs.package_version }}
+          body: |
+            Auto-released by bot.
+            See commit changes.
+          draft: false
+          prerelease: ${{ needs.checks.outputs.pre_release }}
 
       - name: Build package
         run: bundle exec gem build -o rails-cloud-tasks.gem
