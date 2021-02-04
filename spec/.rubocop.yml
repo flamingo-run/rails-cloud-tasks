@@ -6,4 +6,4 @@ Metrics/BlockLength:
   Max: 200
 
 RSpec/MultipleMemoizedHelpers:
-  AllowSubject: false
+  Enabled: false
