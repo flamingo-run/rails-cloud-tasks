@@ -16,7 +16,8 @@ describe RailsCloudTasks::Configuration do
         {
           'GCP_LOCATION' => 'env-location',
           'GCP_SERVICE_ACCOUNT' => 'env-email@sample.com',
-          'GCP_PROJECT' => 'env-project-test'
+          'GCP_PROJECT' => 'env-project-test',
+          'GCP_APP_ENDPOINT' => 'http://endpoint.url'
         }
       end
 
@@ -27,6 +28,7 @@ describe RailsCloudTasks::Configuration do
       its(:location_id) { is_expected.to eql(stubs['GCP_LOCATION']) }
       its(:project_id) { is_expected.to eql(stubs['GCP_PROJECT']) }
       its(:service_account_email) { is_expected.to eql(stubs['GCP_SERVICE_ACCOUNT']) }
+      its(:host) { is_expected.to eql(stubs['GCP_APP_ENDPOINT']) }
     end
   end
 
