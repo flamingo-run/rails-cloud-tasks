@@ -10,6 +10,7 @@ module RailsCloudTasks
       @service_account_email = ENV['GCP_SERVICE_ACCOUNT']
       @location_id = ENV['GCP_LOCATION']
       @project_id = ENV['GCP_PROJECT']
+      @host = ENV['GCP_APP_ENDPOINT']
       @tasks_path = '/tasks'
       @scheduler_file_path = './config/scheduler.yml'
       @scheduler_prefix_name = 'rails-cloud'
