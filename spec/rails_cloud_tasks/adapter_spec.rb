@@ -5,20 +5,45 @@ describe RailsCloudTasks::Adapter do
   subject(:instance) { described_class.new(client) }
 
   let(:job) { DummyJob.new(args) }
-  let(:args) { { arg1: 'one', arg2: 'two' } }
+  let(:args) { { arg1: 'one', arg2: 'two', text: 'By forcing encode âã' } }
   let(:tomorrow) { (Time.now + 1.day).to_i }
+  let(:config) { RailsCloudTasks.config }
 
   let(:client) { instance_spy(Google::Cloud::Tasks::V2::CloudTasks::Client) }
 
   describe 'enqueue' do
     subject(:enqueue) { instance.enqueue(job, tomorrow) }
 
+    let(:queue_path) { '/this/valid/path' }
+    let(:expected_task) do
+      {
+        http_request: hash_including(
+          body: { job: job.serialize }.to_json.force_encoding('ASCII-8BIT')
+        )
+      }
+    end
+
     context 'when the queue exists' do
       before do
         allow(client).to receive(:create_task).and_return('task-id')
+        allow(client).to receive(:queue_path).and_return(queue_path)
       end
 
       it { is_expected.to eq 'task-id' }
+
+      it do
+        enqueue
+        expect(client).to have_received(:queue_path).with(
+          project: config.project_id, location: config.location_id,
+          queue: job.queue_name
+        )
+      end
+
+      it do
+        enqueue
+        expect(client).to have_received(:create_task).with(parent: queue_path,
+                                                           task:   hash_including(expected_task))
+      end
     end
 
     context 'when the queue does exist' do
