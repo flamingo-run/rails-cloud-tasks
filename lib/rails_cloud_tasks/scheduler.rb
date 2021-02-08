@@ -4,28 +4,36 @@ module RailsCloudTasks
              :scheduler_file_path, :scheduler_prefix_name,
              :service_account_email, to: 'RailsCloudTasks.config'
 
-    attr_reader :client, :credentials
+    attr_reader :client, :credentials, :logger
 
     def initialize(
       client: Google::Cloud::Scheduler.cloud_scheduler,
-      credentials: RailsCloudTasks::Credentials.new
+      credentials: RailsCloudTasks::Credentials.new,
+      logger: RailsCloudTasks.logger
     )
       client.configure do |config|
         config.credentials = credentials.generate(service_account_email)
       end
       @client = client
+      @logger = logger
     end
 
     # Create & Update scheduler job on Google Cloud
     # TODO: Support to delete scheduled jobs
     def upsert
+      result = { success: [], failure: [] }
       scheduler_jobs.each do |job|
+        success = true
         begin
           client.create_job parent: location_path, job: job
         rescue Google::Cloud::AlreadyExistsError
           client.update_job job: job
+        rescue StandardError
+          success = false
         end
+        success ? (result[:success] << job[:name]) : (result[:failure] << job[:name])
       end
+      log_output(result)
     end
 
     protected
@@ -57,6 +65,24 @@ module RailsCloudTasks
       YAML.safe_load(ERB.new(settings).result).map(&:deep_symbolize_keys)
     rescue Errno::ENOENT
       []
+    end
+
+    def log_output(result)
+      parse_task_name = ->(task) { task.split("#{scheduler_prefix_name}--")[1] }
+      success = result[:success].map(&parse_task_name)
+      failure = result[:failure].map(&parse_task_name)
+
+      if success.count.positive?
+        log("Successfuly scheduled #{success.count} tasks", '- [✓] ',
+            success)
+      end
+
+      log("Failed to schedule #{failure.count} tasks", '- [𐄂] ', failure) if failure.count.positive?
+    end
+
+    def log(desc, prefix, tasks)
+      logger.info(desc)
+      logger.info(prefix + tasks.join("\n #{prefix}"))
     end
   end
 end
