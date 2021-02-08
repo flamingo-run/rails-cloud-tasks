@@ -1,9 +1,12 @@
 describe RailsCloudTasks::Scheduler do
   require 'google/cloud/scheduler/v1'
-  subject(:scheduler) { described_class.new(client: client, credentials: credentials) }
+  subject(:scheduler) do
+    described_class.new(client: client, credentials: credentials, logger: logger)
+  end
 
   let(:client) { instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client) }
   let(:credentials) { instance_spy(RailsCloudTasks::Credentials) }
+  let(:logger) { instance_spy(RailsCloudTasks.logger.class) }
   let(:config) { RailsCloudTasks.config }
   let(:service_account_email) { config.service_account_email }
 
@@ -124,6 +127,34 @@ describe RailsCloudTasks::Scheduler do
       it do
         upsert
         expect(client).to have_received(:update_job).with(job: job2)
+      end
+    end
+
+    context 'with logging' do
+      before do
+        allow(client).to receive(:create_job)
+        allow(client).to receive(:create_job).with(parent: location_path,
+                                                   job:    job2).and_raise(StandardError.new)
+      end
+
+      it do
+        upsert
+        expect(logger).to have_received(:info).with('Successfuly scheduled 1 tasks')
+      end
+
+      it do
+        upsert
+        expect(logger).to have_received(:info).with('- [✓] HashArgsJob')
+      end
+
+      it do
+        upsert
+        expect(logger).to have_received(:info).with('Failed to schedule 1 tasks')
+      end
+
+      it do
+        upsert
+        expect(logger).to have_received(:info).with('- [𐄂] MultArgsJob')
       end
     end
   end
