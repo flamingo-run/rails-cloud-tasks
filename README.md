@@ -39,6 +39,8 @@ RailsCloudTasks.configure do |config|
   config.service_account_email = 'test-account@test-project.iam.gserviceaccount.com'
   config.project_id = 'my-gcp-project' # This is not needed if running on GCE
   config.location_id = 'us-central1'
+  config.scheduler_file_path = './custom_path/scheduler_jobs.yml'
+  config.scheduler_prefix_name = 'my-app-name'
 
   # Base url used by Cloud Tasks to reach your application and run the tasks
   config.host = 'https://myapplication.host.com'
@@ -49,7 +51,18 @@ RailsCloudTasks.configure do |config|
 end
 ```
 
-You can use env-var to define _project_id_, _location_id_ and _service_account_email_ instead. Just add the following environment variables on your application: _GCP_LOCATION_, _GCP_PROJECT_, _GCP_SERVICE_ACCOUNT_.  The attributes will be fetched using GCP metadata if missing.
+Check out the available configs and its usage description:
+
+| attribute             	| description                                                                                                 	| env support         	| app engine fallback 	| default value            	|
+|-----------------------	|-------------------------------------------------------------------------------------------------------------	|---------------------	|--------------------	|--------------------------	|
+| service_account_email 	| The app service account email. It''s used to impersonate an user on schedule job                            	| GCP_SERVICE_ACCOUNT 	| ✓                  	|                          	|
+| project_id            	| The Project ID                                                                                              	| GCP_PROJECT         	| ✓                  	|                          	|
+| location_id           	| The region where you app is running (eg: us-central1, us-east1...)                                          	| GCP_LOCATION        	| ✓                  	|                          	|
+| host                  	| The app endpoint which the app is running. *Do not use custom domain* Use the generated domain by Cloud Run 	| GCP_APP_ENDPOINT    	|                    	|                          	|
+| scheduler_file_path   	| Path which the scheduler file is located                                                                    	| 𐄂                   	|                    	| './config/scheduler.yml' 	|
+| scheduler_prefix_name 	| The prefix to be set into scheduler job name                                                                	| 𐄂                   	|                    	| 'rails-cloud'            	|
+| tasks_path            	| The path to run tasks                                                                                       	| 𐄂                   	|                    	| '/tasks'                 	|
+
 
 - Add a Job class:
 ```ruby
@@ -76,6 +89,34 @@ end
 ```ruby
 MyJob.perform_later(attrs)
 ```
+
+### Scheduled Jobs
+
+We have support to Google Cloud Schedule. It's based on Cloud tasks, the jobs are scheduled with HTTP Target. We do not support Pub/Sub or App Engine HTTP for now.
+
+Check out the follow sample of config file:
+```yaml
+# config/scheduler.yml
+- name: Users::SyncJob
+  schedule: 0 8 * * *
+  description: Sync user data
+  time_zone: "America/Los_Angeles"
+  args:
+    arg1: 100
+    arg2: 200
+```
+
+| attribute   	| description                                                    	| required 	|
+|-------------	|----------------------------------------------------------------	|----------	|
+| name        	| The Job class namespace                                        	| ✓        	|
+| schedule    	| The frequency to run your job. It should be a unix-cron format 	| ✓        	|
+| description 	| What this job does                                             	| ✓        	|
+| time_zone   	| Choose which one timezone your job must run                    	| ✓        	|
+| args        	| What are the job's arguments                                   	| ✓        	|
+
+
+
+
 ## Tests
 
 To run tests:
