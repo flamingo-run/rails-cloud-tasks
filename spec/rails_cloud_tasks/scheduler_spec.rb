@@ -56,7 +56,7 @@ describe RailsCloudTasks::Scheduler do
     end
     let(:job2) do
       {
-        name:        "#{location_path}/jobs/testing-rails-cloud__MultArgsJob",
+        name:        "#{location_path}/jobs/testing-rails-cloud--MultArgsJob",
         schedule:    '0 8 * * *',
         description: 'Mult args',
         time_zone:   'America/Los_Angeles',
@@ -78,6 +78,17 @@ describe RailsCloudTasks::Scheduler do
     it do
       upsert
       expect(client).to have_received(:location_path).with(project: project, location: location)
+    end
+
+    context 'when the scheduled job file does not exist' do
+      before do
+        allow(config).to receive(:scheduler_file_path).and_return('/invalid/path')
+      end
+
+      it do
+        upsert
+        expect(client).not_to have_received(:create_job)
+      end
     end
 
     context 'when the scheduled jobs does not exists' do

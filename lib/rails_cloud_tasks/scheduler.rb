@@ -40,7 +40,7 @@ module RailsCloudTasks
 
     def build_job(job)
       {
-        name:        "#{location_path}/jobs/#{scheduler_prefix_name}__#{job[:name]}",
+        name:        "#{location_path}/jobs/#{scheduler_prefix_name}--#{job[:name]}",
         schedule:    job[:schedule],
         description: job[:description],
         time_zone:   job[:time_zone],
@@ -55,6 +55,8 @@ module RailsCloudTasks
     def parse_jobs_from_file
       settings = File.read(File.expand_path(scheduler_file_path))
       YAML.safe_load(ERB.new(settings).result).map(&:deep_symbolize_keys)
+    rescue Errno::ENOENT
+      []
     end
   end
 end
