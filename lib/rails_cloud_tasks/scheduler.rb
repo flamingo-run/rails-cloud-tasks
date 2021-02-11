@@ -55,6 +55,8 @@ module RailsCloudTasks
     def parse_jobs_from_file
       settings = File.read(File.expand_path(scheduler_file_path))
       YAML.safe_load(ERB.new(settings).result).map(&:deep_symbolize_keys)
+    rescue Errno::ENOENT
+      []
     end
   end
 end
