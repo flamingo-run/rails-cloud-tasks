@@ -56,7 +56,7 @@ describe RailsCloudTasks::Scheduler do
     end
     let(:job2) do
       {
-        name:        "#{location_path}/jobs/testing-rails-cloud__MultArgsJob",
+        name:        "#{location_path}/jobs/testing-rails-cloud--MultArgsJob",
         schedule:    '0 8 * * *',
         description: 'Mult args',
         time_zone:   'America/Los_Angeles',

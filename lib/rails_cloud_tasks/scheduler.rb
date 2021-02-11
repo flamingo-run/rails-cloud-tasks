@@ -40,7 +40,7 @@ module RailsCloudTasks
 
     def build_job(job)
       {
-        name:        "#{location_path}/jobs/#{scheduler_prefix_name}__#{job[:name]}",
+        name:        "#{location_path}/jobs/#{scheduler_prefix_name}--#{job[:name]}",
         schedule:    job[:schedule],
         description: job[:description],
         time_zone:   job[:time_zone],
