@@ -73,6 +73,21 @@ describe RailsCloudTasks::Adapter do
 
       its(:name) { is_expected.to eq 'task-id' }
     end
+
+    context 'when the queue name was not defined on job' do
+      before do
+        job.queue_name = nil
+        allow(client).to receive(:create_task).and_return('task-id')
+      end
+
+      it do
+        enqueue
+        expect(client).to have_received(:queue_path).with(
+          project: config.project_id, location: config.location_id,
+          queue: config.default_queue_name
+        )
+      end
+    end
   end
 
   describe 'enqueue_at' do

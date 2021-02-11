@@ -38,4 +38,5 @@ RailsCloudTasks.configure do |config|
   config.service_account_email = 'test@email.rails.cloud'
   config.scheduler_file_path = './spec/fixtures/scheduler_job.yml'
   config.scheduler_prefix_name = 'testing-rails-cloud'
+  config.default_queue_name = 'my-app'
 end
