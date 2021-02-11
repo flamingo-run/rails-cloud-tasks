@@ -62,6 +62,7 @@ Check out the available configs and its usage description:
 | scheduler_file_path   	| Path which the scheduler file is located                                                                    	| 𐄂                   	|                    	| './config/scheduler.yml' 	|
 | scheduler_prefix_name 	| The prefix to be set into scheduler job name                                                                	| 𐄂                   	|                    	| 'rails-cloud'            	|
 | tasks_path            	| The path to run tasks                                                                                       	| 𐄂                   	|                    	| '/tasks'                 	|
+| default_queue_name      | A default queue name for your tasks                                                                           | 𐄂                   	|                    	| 'rails-cloud-app'                 	|
 
 
 - Add a Job class:

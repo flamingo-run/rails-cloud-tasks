@@ -4,14 +4,16 @@ module RailsCloudTasks
   class Adapter
     attr_reader :client
 
-    delegate :project_id, :location_id, :host, :tasks_path, :auth, to: 'RailsCloudTasks.config'
+    delegate :project_id, :location_id, :host, :tasks_path, :auth, :default_queue_name,
+             to: 'RailsCloudTasks.config'
 
     def initialize(client = Google::Cloud::Tasks.cloud_tasks)
       @client = client
     end
 
     def enqueue(job, timestamp = nil)
-      path = client.queue_path(project: project_id, location: location_id, queue: job.queue_name)
+      path = client.queue_path(project: project_id, location: location_id,
+                                queue: job.queue_name || default_queue_name)
       task = build_task(job, timestamp)
 
       begin
