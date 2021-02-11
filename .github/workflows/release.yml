@@ -30,7 +30,9 @@ jobs:
           key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}-2.7
 
       - name: Install dependencies
-        run: bundle install
+        run: |
+          bundle config set without 'development test'
+          bundle install
 
       - name: Fetching Tags
         run: git fetch -t
@@ -68,7 +70,9 @@ jobs:
           key: ${{ runner.os }}-gem-${{ hashFiles('**/rails-cloud-tasks.gemspec') }}-2.7
 
       - name: Install dependencies
-        run: bundle install
+        run: |
+          bundle config set without 'development test'
+          bundle install
 
       - name: Create Release
         uses: actions/create-release@v1
