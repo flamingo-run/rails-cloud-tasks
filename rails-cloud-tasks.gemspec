@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'google-apis-iamcredentials_v1'
   spec.add_dependency 'google-cloud-scheduler', '>= 2'
   spec.add_dependency 'google-cloud-tasks', '>= 2'
-  spec.add_development_dependency 'rails', '>= 4'
+  spec.add_dependency 'rails', '>= 4'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
