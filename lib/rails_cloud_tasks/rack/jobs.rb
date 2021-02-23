@@ -8,6 +8,10 @@ module RailsCloudTasks
         def call(env)
           job_class = extract_job_class(env)
 
+          RailsCloudTasks::Instrumentation.transaction_name!(
+            "RailsCloudTasks/#{job_class}/perform_now"
+          )
+
           request = ::Rack::Request.new(env)
           job_args = extract_args(request)
           job_class.perform_now(job_args)

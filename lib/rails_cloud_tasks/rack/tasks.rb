@@ -9,8 +9,11 @@ module RailsCloudTasks
           request = ::Rack::Request.new(env)
           job = extract_job(request)
 
-          ActiveJob::Base.execute(job)
+          RailsCloudTasks::Instrumentation.transaction_name!(
+            "RailsCloudTasks/#{job['job_class']}/perform_now"
+          )
 
+          ActiveJob::Base.execute(job)
           response(200, {})
         rescue Rack::InvalidPayloadError => e
           response(400, { error: e.cause.message })

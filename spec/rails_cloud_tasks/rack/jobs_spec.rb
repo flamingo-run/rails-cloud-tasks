@@ -18,6 +18,13 @@ describe RailsCloudTasks::Rack::Jobs do
 
     before do
       allow(DummyJob).to receive(:perform_now).with(args.stringify_keys).and_return(:ok)
+      allow(RailsCloudTasks::Instrumentation).to receive(:transaction_name!)
+    end
+
+    it do
+      call
+      expect(RailsCloudTasks::Instrumentation).to have_received(:transaction_name!)
+        .with("RailsCloudTasks/#{job_class}/perform_now")
     end
 
     context 'when job is successfully attempted' do
