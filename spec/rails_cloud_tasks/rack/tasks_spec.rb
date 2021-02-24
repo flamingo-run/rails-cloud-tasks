@@ -3,7 +3,7 @@ require 'google/cloud/tasks/v2'
 
 describe RailsCloudTasks::Rack::Tasks do
   let(:env) do
-    { 'rack.input' => StringIO.new(payload) }
+    { 'rack.input' => StringIO.new(payload.to_json) }
   end
 
   let(:payload) do
@@ -18,7 +18,7 @@ describe RailsCloudTasks::Rack::Tasks do
         executions:      0,
         locale:          'en'
       }
-    }.to_json
+    }
   end
 
   describe 'call' do
@@ -26,6 +26,13 @@ describe RailsCloudTasks::Rack::Tasks do
 
     before do
       allow(ActiveJob::Base).to receive(:execute).and_return(:ok)
+      allow(RailsCloudTasks::Instrumentation).to receive(:transaction_name!)
+    end
+
+    it do
+      call
+      expect(RailsCloudTasks::Instrumentation).to have_received(:transaction_name!)
+        .with("RailsCloudTasks/#{payload[:job][:job_class]}/perform_now")
     end
 
     context 'when job is successfully attempted' do
@@ -35,7 +42,7 @@ describe RailsCloudTasks::Rack::Tasks do
     end
 
     context 'when payload is incorrect' do
-      let(:payload) { {}.to_json }
+      let(:payload) { {} }
 
       its(:first)  { is_expected.to eq 400 }
       its(:second) { is_expected.to eq('Content-Type' => 'application/json') }

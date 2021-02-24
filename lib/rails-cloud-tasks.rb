@@ -12,6 +12,7 @@ module RailsCloudTasks
   autoload :AppEngine
   autoload :Configuration
   autoload :Version
+  autoload :Instrumentation
 
   module Rack
     extend ActiveSupport::Autoload
