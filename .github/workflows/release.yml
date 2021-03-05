@@ -12,6 +12,7 @@ jobs:
       pre_release: ${{ steps.versioning.outputs.pre_release }}
       upgraded: ${{ steps.versioning.outputs.upgraded }}
       package_version: ${{ steps.versioning.outputs.package_version }}
+      release_message: ${{ steps.versioning.outputs.release_message }}
     steps:
       - uses: actions/checkout@v2
 
@@ -47,6 +48,8 @@ jobs:
           echo "::set-output name=upgraded::"$upgraded
           pre_release=$([[ $package_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "false" || echo "true")
           echo "::set-output name=pre_release::"$pre_release
+          release_message=$(git log HEAD ^$(git describe --tags `git rev-list --tags --max-count=1`) --pretty=format:'* %C(green)%h%C(reset) %s')
+          echo "::set-output name=release_message::"$release_message
 
   release:
     runs-on: ubuntu-latest
@@ -82,8 +85,7 @@ jobs:
           tag_name: ${{ needs.checks.outputs.package_version }}
           release_name: Release ${{ needs.checks.outputs.package_version }}
           body: |
-            Auto-released by bot.
-            See commit changes.
+            ${{ needs.checks.outputs.release_message }}
           draft: false
           prerelease: ${{ needs.checks.outputs.pre_release }}
 
