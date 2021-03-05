@@ -1,3 +1,3 @@
 describe RailsCloudTasks::VERSION do
-  it { is_expected.to eq '0.0.2' }
+  it { is_expected.to eq '0.0.3' }
 end
