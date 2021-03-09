@@ -131,10 +131,12 @@ describe RailsCloudTasks::Scheduler do
     end
 
     context 'with logging' do
+      let(:error) { StandardError.new }
+
       before do
         allow(client).to receive(:create_job)
         allow(client).to receive(:create_job).with(parent: location_path,
-                                                   job:    job2).and_raise(StandardError.new)
+                                                   job:    job2).and_raise(error)
       end
 
       it do
@@ -150,6 +152,11 @@ describe RailsCloudTasks::Scheduler do
       it do
         upsert
         expect(logger).to have_received(:info).with('Failed to schedule 1 tasks')
+      end
+
+      it do
+        upsert
+        expect(logger).to have_received(:error).with(error)
       end
 
       it do
