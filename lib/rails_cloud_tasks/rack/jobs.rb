@@ -14,7 +14,8 @@ module RailsCloudTasks
 
           request = ::Rack::Request.new(env)
           job_args = extract_args(request)
-          job_class.perform_now(job_args)
+
+          job_class.perform_now(*job_args)
 
           response(200, {})
         rescue Rack::InvalidPayloadError => e
@@ -32,7 +33,7 @@ module RailsCloudTasks
 
         def extract_args(request)
           body = request.body.read
-          JSON.parse(body)
+          JSON.parse(body) || []
         rescue JSON::ParserError, KeyError
           raise Rack::InvalidPayloadError
         end

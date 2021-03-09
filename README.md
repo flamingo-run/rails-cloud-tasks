@@ -111,18 +111,21 @@ Check out the follow sample of config file:
   time_zone: "America/Los_Angeles"
   class_name: Users::SyncJob
   args:
-    arg1: 100
-    arg2: 200
+    - this_first: argument
+      is_a: hash
+    - - this second argument
+      - is an array
+    - this third argument is a string
 ```
 
-| attribute   	| description                                                    	                   | required 	|
-|-------------	|----------------------------------------------------------------------------------  |----------	|
-| name        	| Any descriptive name, following [Tasks naming restrictions][1]                     | ✓        	|
-| schedule    	| The frequency to run your job. It should be a unix-cron format 	                   | ✓        	|
-| description 	| What this job does                                             	                   | ✓        	|
-| time_zone   	| Choose which one timezone your job must run                    	                   | ✓        	|
-| args        	| What are the job's arguments                                   	                   | 𐄂          |
-| class_name    | The Job class name (including namespace)                                           | ✓        	|
+| attribute   	| description                                                    	                                                   | required 	|
+|-------------	|----------------------------------------------------------------------------------                                  |----------	|
+| name        	| Any descriptive name, following [Tasks naming restrictions][1]                                                     | ✓        	|
+| schedule    	| The frequency to run your job. It should be a unix-cron format 	                                                   | ✓        	|
+| description 	| What this job does                                             	                                                   | ✓        	|
+| time_zone   	| Choose which one timezone your job must run                    	                                                   | ✓        	|
+| args        	| Arguments to the job execution. Important: if present, this must be an array of items. Check out the example above | 𐄂          |
+| class_name    | The Job class name (including namespace)                                                                           | ✓        	|
 
 [1]: https://cloud.google.com/tasks/docs/reference/rpc/google.cloud.tasks.v2
 

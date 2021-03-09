@@ -50,7 +50,7 @@ describe RailsCloudTasks::Scheduler do
         http_target: {
           uri:         "#{host}#{tasks_path}/HashArgsJob",
           http_method: 'POST',
-          body:        '{"arg1":100,"arg2":200}',
+          body:        '[{"arg1":100},{"arg2":200}]',
           oidc_token:  {
             service_account_email: service_account_email
           }
@@ -66,7 +66,7 @@ describe RailsCloudTasks::Scheduler do
         http_target: {
           uri:         "#{host}#{tasks_path}/Namespace::MultArgsJob",
           http_method: 'POST',
-          body:        '[{"arg1":100,"arg2":200},{"arg1":3}]',
+          body:        '[{"arg1":100,"arg2":200},"another param"]',
           oidc_token:  {
             service_account_email: service_account_email
           }
