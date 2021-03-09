@@ -11,13 +11,13 @@ describe RailsCloudTasks::Rack::Jobs do
 
   let(:job_class) { 'DummyJob' }
   let(:payload) { args.to_json }
-  let(:args) { { arg1: 'one', arg2: 'two' } }
+  let(:args) { [{ arg1: 'one', arg2: 'two' }.stringify_keys, 'params 2'] }
 
   describe 'call' do
     subject(:call) { described_class.call(env) }
 
     before do
-      allow(DummyJob).to receive(:perform_now).with(args.stringify_keys).and_return(:ok)
+      allow(DummyJob).to receive(:perform_now).with(*args).and_return(:ok)
       allow(RailsCloudTasks::Instrumentation).to receive(:transaction_name!)
     end
 

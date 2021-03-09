@@ -4,8 +4,8 @@
   time_zone: "America/Los_Angeles"
   class_name: HashArgsJob
   args:
-    arg1: 100
-    arg2: 200
+    - arg1: 100
+    - arg2: 200
 - name: MultArgsJob
   schedule: 0 8 * * *
   description: Mult args
@@ -14,5 +14,4 @@
   args:
     - arg1: 100
       arg2: 200
-    - arg1: 1
-      arg1: 3
+    - another param
