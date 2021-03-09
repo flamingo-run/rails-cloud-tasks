@@ -23,15 +23,7 @@ module RailsCloudTasks
     def upsert
       result = { success: [], failure: [] }
       scheduler_jobs.each do |job|
-        success = true
-        begin
-          client.create_job parent: location_path, job: job
-        rescue Google::Cloud::AlreadyExistsError
-          client.update_job job: job
-        rescue StandardError
-          success = false
-        end
-        success ? (result[:success] << job[:name]) : (result[:failure] << job[:name])
+        upsert_job(job) ? (result[:success] << job[:name]) : (result[:failure] << job[:name])
       end
       log_output(result)
     end
@@ -83,6 +75,21 @@ module RailsCloudTasks
     def log(desc, prefix, tasks)
       logger.info(desc)
       logger.info(prefix + tasks.join("\n #{prefix}"))
+    end
+
+    private
+
+    def upsert_job(job)
+      success = true
+      begin
+        client.create_job parent: location_path, job: job
+      rescue Google::Cloud::AlreadyExistsError
+        client.update_job job: job
+      rescue StandardError => e
+        logger.error(e)
+        success = false
+      end
+      success
     end
   end
 end
