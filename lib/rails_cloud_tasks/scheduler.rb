@@ -53,7 +53,7 @@ module RailsCloudTasks
         description: job[:description],
         time_zone:   job[:time_zone],
         http_target: {
-          uri:         "#{host}#{tasks_path}/#{job[:name]}",
+          uri:         "#{host}#{tasks_path}/#{job[:class_name]}",
           http_method: 'POST',
           body:        job[:args].to_json
         }.merge(auth)
