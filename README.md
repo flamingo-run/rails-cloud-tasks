@@ -105,23 +105,26 @@ We have support to Google Cloud Schedule. It's based on Cloud tasks, the jobs ar
 Check out the follow sample of config file:
 ```yaml
 # config/scheduler.yml
-- name: Users::SyncJob
+- name: UsersSyncJob
   schedule: 0 8 * * *
   description: Sync user data
   time_zone: "America/Los_Angeles"
+  class_name: Users::SyncJob
   args:
     arg1: 100
     arg2: 200
 ```
 
-| attribute   	| description                                                    	| required 	|
-|-------------	|----------------------------------------------------------------	|----------	|
-| name        	| The Job class namespace                                        	| ✓        	|
-| schedule    	| The frequency to run your job. It should be a unix-cron format 	| ✓        	|
-| description 	| What this job does                                             	| ✓        	|
-| time_zone   	| Choose which one timezone your job must run                    	| ✓        	|
-| args        	| What are the job's arguments                                   	| ✓        	|
+| attribute   	| description                                                    	                   | required 	|
+|-------------	|----------------------------------------------------------------------------------  |----------	|
+| name        	| Any descriptive name, following [Tasks naming restrictions][1]                     | ✓        	|
+| schedule    	| The frequency to run your job. It should be a unix-cron format 	                   | ✓        	|
+| description 	| What this job does                                             	                   | ✓        	|
+| time_zone   	| Choose which one timezone your job must run                    	                   | ✓        	|
+| args        	| What are the job's arguments                                   	                   | 𐄂          |
+| class_name    | The Job class name (including namespace)                                           | ✓        	|
 
+[1]: https://cloud.google.com/tasks/docs/reference/rpc/google.cloud.tasks.v2
 
 
 

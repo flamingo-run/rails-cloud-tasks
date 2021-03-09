@@ -64,7 +64,7 @@ describe RailsCloudTasks::Scheduler do
         description: 'Mult args',
         time_zone:   'America/Los_Angeles',
         http_target: {
-          uri:         "#{host}#{tasks_path}/MultArgsJob",
+          uri:         "#{host}#{tasks_path}/Namespace::MultArgsJob",
           http_method: 'POST',
           body:        '[{"arg1":100,"arg2":200},{"arg1":3}]',
           oidc_token:  {

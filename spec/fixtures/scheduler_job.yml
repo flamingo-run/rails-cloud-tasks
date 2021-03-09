@@ -2,6 +2,7 @@
   schedule: 0 8 * * *
   description: Hash args
   time_zone: "America/Los_Angeles"
+  class_name: HashArgsJob
   args:
     arg1: 100
     arg2: 200
@@ -9,6 +10,7 @@
   schedule: 0 8 * * *
   description: Mult args
   time_zone: "America/Los_Angeles"
+  class_name: Namespace::MultArgsJob
   args:
     - arg1: 100
       arg2: 200
