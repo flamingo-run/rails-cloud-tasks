@@ -17,7 +17,7 @@ describe RailsCloudTasks do
     end
 
     context 'when the adpter could not be loaded' do
-      let(:error) { StandardError.new }
+      let(:error) { Errno::EHOSTDOWN.new }
 
       before do
         allow(Rails).to receive(:env).and_return(environment.inquiry)
