@@ -54,9 +54,9 @@ describe RailsCloudTasks::Rack::Tasks do
         allow(ActiveJob::Base).to receive(:execute).and_raise(StandardError, 'some error')
       end
 
-      its(:first)  { is_expected.to eq 500 }
-      its(:second) { is_expected.to eq('Content-Type' => 'application/json') }
-      its(:third)  { is_expected.to eq [{ error: 'some error' }.to_json] }
+      it do
+        expect { call }.to raise_error(StandardError)
+      end
     end
   end
 end
