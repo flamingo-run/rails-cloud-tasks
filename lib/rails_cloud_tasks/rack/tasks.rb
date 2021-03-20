@@ -17,8 +17,6 @@ module RailsCloudTasks
           response(200, {})
         rescue Rack::InvalidPayloadError => e
           response(400, { error: e.cause.message })
-        rescue StandardError => e
-          response(500, { error: e.message })
         end
 
         private
