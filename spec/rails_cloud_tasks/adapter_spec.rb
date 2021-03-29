@@ -2,7 +2,7 @@ require 'active_support/core_ext'
 require 'google/cloud/tasks/v2'
 
 describe RailsCloudTasks::Adapter do
-  subject(:instance) { described_class.new(client) }
+  subject(:instance) { described_class.new }
 
   let(:job) { DummyJob.new(args) }
   let(:args) { { arg1: 'one', arg2: 'two', text: 'By forcing encode âã' } }
@@ -10,6 +10,10 @@ describe RailsCloudTasks::Adapter do
   let(:config) { RailsCloudTasks.config }
 
   let(:client) { instance_spy(Google::Cloud::Tasks::V2::CloudTasks::Client) }
+
+  before do
+    allow(Google::Cloud::Tasks).to receive(:cloud_tasks).and_return(client)
+  end
 
   describe 'enqueue' do
     subject(:enqueue) { instance.enqueue(job, tomorrow) }
