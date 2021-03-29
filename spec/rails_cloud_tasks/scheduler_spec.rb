@@ -1,7 +1,7 @@
 describe RailsCloudTasks::Scheduler do
   require 'google/cloud/scheduler/v1'
   subject(:scheduler) do
-    described_class.new(client: client, credentials: credentials, logger: logger)
+    described_class.new(credentials: credentials, logger: logger)
   end
 
   let(:client) { instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client) }
@@ -10,7 +10,13 @@ describe RailsCloudTasks::Scheduler do
   let(:config) { RailsCloudTasks.config }
   let(:service_account_email) { config.service_account_email }
 
+  before do
+    allow(Google::Cloud::Scheduler).to receive(:cloud_scheduler).and_return(client)
+  end
+
   context 'with credentials' do
+    subject(:client_call) { scheduler.client }
+
     let(:configuration) do
       instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client::Configuration)
     end
@@ -22,12 +28,12 @@ describe RailsCloudTasks::Scheduler do
     end
 
     it do
-      scheduler
+      client_call
       expect(credentials).to have_received(:generate).with(service_account_email)
     end
 
     it do
-      scheduler
+      client_call
       expect(configuration).to have_received(:credentials=).with(fake_credential)
     end
   end

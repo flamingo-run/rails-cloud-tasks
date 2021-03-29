@@ -2,13 +2,7 @@ require 'google-cloud-tasks'
 
 module RailsCloudTasks
   class Adapter
-    attr_reader :client
-
     delegate :project_id, :location_id, :host, :tasks_path, :auth, to: 'RailsCloudTasks.config'
-
-    def initialize(client = Google::Cloud::Tasks.cloud_tasks)
-      @client = client
-    end
 
     def enqueue(job, timestamp = nil)
       path = client.queue_path(project: project_id, location: location_id, queue: job.queue_name)
@@ -26,6 +20,10 @@ module RailsCloudTasks
 
     def enqueue_at(job, timestamp)
       enqueue(job, timestamp.to_i)
+    end
+
+    def client
+      @client ||= Google::Cloud::Tasks.cloud_tasks
     end
 
     private

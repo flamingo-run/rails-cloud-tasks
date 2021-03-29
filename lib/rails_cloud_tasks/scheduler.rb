@@ -4,17 +4,13 @@ module RailsCloudTasks
              :scheduler_file_path, :scheduler_prefix_name,
              :service_account_email, to: 'RailsCloudTasks.config'
 
-    attr_reader :client, :credentials, :logger
+    attr_reader :credentials, :logger
 
     def initialize(
-      client: Google::Cloud::Scheduler.cloud_scheduler,
       credentials: RailsCloudTasks::Credentials.new,
       logger: RailsCloudTasks.logger
     )
-      client.configure do |config|
-        config.credentials = credentials.generate(service_account_email)
-      end
-      @client = client
+      @credentials = credentials
       @logger = logger
     end
 
@@ -26,6 +22,12 @@ module RailsCloudTasks
         upsert_job(job) ? (result[:success] << job[:name]) : (result[:failure] << job[:name])
       end
       log_output(result)
+    end
+
+    def client
+      @client ||= Google::Cloud::Scheduler.cloud_scheduler.configure do |config|
+        config.credentials = credentials.generate(service_account_email)
+      end
     end
 
     protected
