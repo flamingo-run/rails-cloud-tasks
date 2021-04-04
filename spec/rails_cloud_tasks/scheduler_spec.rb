@@ -7,23 +7,23 @@ describe RailsCloudTasks::Scheduler do
   let(:client) { instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client) }
   let(:credentials) { instance_spy(RailsCloudTasks::Credentials) }
   let(:logger) { instance_spy(RailsCloudTasks.logger.class) }
+  let(:configuration) do
+    instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client::Configuration)
+  end
   let(:config) { RailsCloudTasks.config }
   let(:service_account_email) { config.service_account_email }
 
   before do
     allow(Google::Cloud::Scheduler).to receive(:cloud_scheduler).and_return(client)
+    allow(client).to receive(:configure).and_return(configuration)
   end
 
   context 'with credentials' do
     subject(:client_call) { scheduler.client }
 
-    let(:configuration) do
-      instance_spy(Google::Cloud::Scheduler::V1::CloudScheduler::Client::Configuration)
-    end
     let(:fake_credential) { 'fake generated credential' }
 
     before do
-      allow(client).to receive(:configure).and_yield(configuration)
       allow(credentials).to receive(:generate).and_return(fake_credential)
     end
 
