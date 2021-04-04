@@ -25,9 +25,10 @@ module RailsCloudTasks
     end
 
     def client
-      @client ||= Google::Cloud::Scheduler.cloud_scheduler.configure do |config|
-        config.credentials = credentials.generate(service_account_email)
-      end
+      configure = lambda { |client|
+        client.configure.credentials = credentials.generate(service_account_email)
+      }
+      @client ||= Google::Cloud::Scheduler.cloud_scheduler.tap(&configure)
     end
 
     protected
