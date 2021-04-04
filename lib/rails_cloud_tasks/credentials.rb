@@ -1,7 +1,6 @@
 module RailsCloudTasks
   class Credentials
     require 'googleauth'
-    require 'google/apis/cloudscheduler_v1'
     require 'google/apis/iamcredentials_v1'
 
     DEFAULT_SCOPES = ['https://www.googleapis.com/auth/cloud-platform'].freeze

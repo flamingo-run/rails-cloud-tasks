@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency 'activesupport', '>= 4'
-  spec.add_dependency 'google-apis-cloudscheduler_v1'
   spec.add_dependency 'google-apis-iamcredentials_v1'
   spec.add_dependency 'google-cloud-scheduler', '>= 2'
   spec.add_dependency 'google-cloud-tasks', '>= 2'
