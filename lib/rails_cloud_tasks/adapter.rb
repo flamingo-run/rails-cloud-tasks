@@ -37,7 +37,8 @@ module RailsCloudTasks
         http_request:  {
           http_method: :POST,
           url:         url,
-          body:        { job: job.serialize }.to_json.force_encoding('ASCII-8BIT')
+          body:        { job: job.serialize }.to_json.force_encoding('ASCII-8BIT'),
+          headers:     { 'Content-Type': 'application/json' }
         }.merge(auth),
         schedule_time: timestamp && Google::Protobuf::Timestamp.new.tap do |ts|
           ts.seconds = timestamp
