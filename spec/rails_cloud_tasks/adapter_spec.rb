@@ -22,7 +22,8 @@ describe RailsCloudTasks::Adapter do
     let(:expected_task) do
       {
         http_request: hash_including(
-          body: { job: job.serialize }.to_json.force_encoding('ASCII-8BIT')
+          body:    { job: job.serialize }.to_json.force_encoding('ASCII-8BIT'),
+          headers: { 'Content-Type': 'application/json' }
         )
       }
     end
