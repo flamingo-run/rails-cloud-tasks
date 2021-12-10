@@ -15,6 +15,10 @@ module RailsCloudTasks
           request = ::Rack::Request.new(env)
           job_args = extract_args(request)
 
+          RailsCloudTasks::Instrumentation.add_custom_attributes(
+            { request_body: job_args }
+          )
+
           job_class.perform_now(*job_args)
 
           response(200, {})
