@@ -19,12 +19,19 @@ describe RailsCloudTasks::Rack::Jobs do
     before do
       allow(DummyJob).to receive(:perform_now).with(*args).and_return(:ok)
       allow(RailsCloudTasks::Instrumentation).to receive(:transaction_name!)
+      allow(RailsCloudTasks::Instrumentation).to receive(:add_custom_attributes)
     end
 
     it do
       call
       expect(RailsCloudTasks::Instrumentation).to have_received(:transaction_name!)
         .with("RailsCloudTasks/#{job_class}/perform_now")
+    end
+
+    it do
+      call
+      expect(RailsCloudTasks::Instrumentation).to have_received(:add_custom_attributes)
+        .with({ request_body: args })
     end
 
     context 'when job is successfully attempted' do

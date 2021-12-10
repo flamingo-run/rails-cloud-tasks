@@ -13,6 +13,10 @@ module RailsCloudTasks
             "RailsCloudTasks/#{job['job_class']}/perform_now"
           )
 
+          RailsCloudTasks::Instrumentation.add_custom_attributes(
+            { request_body: job['arguments'] }
+          )
+
           ActiveJob::Base.execute(job)
           response(200, {})
         rescue Rack::InvalidPayloadError => e

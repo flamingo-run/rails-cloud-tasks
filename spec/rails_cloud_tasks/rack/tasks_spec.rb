@@ -6,6 +6,8 @@ describe RailsCloudTasks::Rack::Tasks do
     { 'rack.input' => StringIO.new(payload.to_json) }
   end
 
+  let(:arguments) { [123] }
+
   let(:payload) do
     {
       job: {
@@ -14,7 +16,7 @@ describe RailsCloudTasks::Rack::Tasks do
         provider_job_id: nil,
         queue_name:      'test-queue',
         priority:        nil,
-        arguments:       [123],
+        arguments:       arguments,
         executions:      0,
         locale:          'en'
       }
@@ -27,12 +29,19 @@ describe RailsCloudTasks::Rack::Tasks do
     before do
       allow(ActiveJob::Base).to receive(:execute).and_return(:ok)
       allow(RailsCloudTasks::Instrumentation).to receive(:transaction_name!)
+      allow(RailsCloudTasks::Instrumentation).to receive(:add_custom_attributes)
     end
 
     it do
       call
       expect(RailsCloudTasks::Instrumentation).to have_received(:transaction_name!)
         .with("RailsCloudTasks/#{payload[:job][:job_class]}/perform_now")
+    end
+
+    it do
+      call
+      expect(RailsCloudTasks::Instrumentation).to have_received(:add_custom_attributes)
+        .with({ request_body: arguments })
     end
 
     context 'when job is successfully attempted' do
