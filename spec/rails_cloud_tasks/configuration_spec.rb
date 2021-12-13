@@ -85,7 +85,7 @@ describe RailsCloudTasks::Configuration do
 
     context 'when service account email get from google auth' do
       let(:service_account_email) { 'google-auth-email-test@iam.google' }
-      let(:metadata) { OpenStruct.new(issuer: service_account_email) }
+      let(:metadata) { instance_double('metadata', issuer: service_account_email) }
 
       before do
         allow(app_engine).to receive(:service_account_email).and_return(nil)
