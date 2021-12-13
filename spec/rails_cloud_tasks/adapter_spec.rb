@@ -67,7 +67,7 @@ describe RailsCloudTasks::Adapter do
 
             raise exception
           end
-          OpenStruct.new(name: 'task-id')
+          instance_double('task', name: 'task-id')
         end
       end
 
@@ -84,7 +84,7 @@ describe RailsCloudTasks::Adapter do
     subject(:enqueue_at) { instance.enqueue_at(job, tomorrow) }
 
     before do
-      allow(instance).to receive(:enqueue).and_return(OpenStruct.new(name: 'task-id'))
+      allow(instance).to receive(:enqueue).and_return(instance_double('task', name: 'task-id'))
     end
 
     it 'calls enqueue with the timestamp' do
